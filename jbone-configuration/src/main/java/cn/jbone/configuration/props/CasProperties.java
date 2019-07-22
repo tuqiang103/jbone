@@ -27,7 +27,7 @@ public class CasProperties implements Serializable {
     /**
      * CASFilter
      */
-    private String casFilterUrlPattern = "/shiro-cas";
+    private String casFilterUrlPattern = "/cas";
 
     /**
      * 成功后跳转的默认路径
@@ -42,7 +42,12 @@ public class CasProperties implements Serializable {
     /**
      * 客户端Session超时时间
      */
-    private long clientSessionTimeout = 1000 * 60 * 3;
+    private long clientSessionTimeout = 1000 * 60 * 3 * 10;
+
+    /**
+     * 登录需要的角色
+     */
+    private String requiredRole = "sso";
 
     /**
      * 权限过滤规则，限制需要CAS过滤的请求路径
@@ -115,7 +120,7 @@ public class CasProperties implements Serializable {
 
     public String getEncodedLoginUrl(){
         try {
-            return casServerUrl + loginUrl + "?service=" + URLEncoder.encode(currentServerUrlPrefix + casFilterUrlPattern, "utf-8");
+            return casServerUrl + loginUrl + "?service=" + URLEncoder.encode(currentServerUrlPrefix + casFilterUrlPattern + "?client_name=CasClient", "utf-8");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -137,6 +142,14 @@ public class CasProperties implements Serializable {
         this.clientSessionTimeout = clientSessionTimeout;
     }
 
+    public String getRequiredRole() {
+        return requiredRole;
+    }
+
+    public void setRequiredRole(String requiredRole) {
+        this.requiredRole = requiredRole;
+    }
+
     @Override
     public String toString() {
         return "CasProperties{" +
@@ -148,6 +161,7 @@ public class CasProperties implements Serializable {
                 ", successUrl='" + successUrl + '\'' +
                 ", unauthorizedUrl='" + unauthorizedUrl + '\'' +
                 ", clientSessionTimeout=" + clientSessionTimeout +
+                ", requiredRole='" + requiredRole + '\'' +
                 ", filterChainDefinition=" + filterChainDefinition +
                 '}';
     }
